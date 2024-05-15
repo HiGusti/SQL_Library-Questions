@@ -1,0 +1,89 @@
+Baik, berikut adalah analisis dan query SQL Server untuk menjawab soal-soal tersebut menggunakan database AdventureWorks2022.bak:
+
+1. Soal: Tentukan pelanggan yang tidak membuat pesanan
+
+   Jawaban:
+   ```sql
+   SELECT c.CustomerID, c.CompanyName
+   FROM Sales.Customer c
+   LEFT JOIN Sales.SalesOrderHeader oh ON c.CustomerID = oh.CustomerID
+   WHERE oh.SalesOrderID IS NULL;
+   ```
+
+   Penjelasan:
+   - Klausa `SELECT` memilih `CustomerID` dan `CompanyName` dari tabel `Sales.Customer`.
+   - Klausa `FROM` menggunakan tabel `Sales.Customer`.
+   - Klausa `LEFT JOIN` menghubungkan tabel `Sales.Customer` dengan `Sales.SalesOrderHeader` berdasarkan `CustomerID`.
+   - Klausa `WHERE` memfilter data pelanggan yang tidak memiliki `SalesOrderID` (tidak membuat pesanan).
+
+2. Soal: Tentukan total banyak pembelian yang dilakukan oleh setiap pelanggan
+
+   Jawaban:
+   ```sql
+   SELECT c.CustomerID, c.CompanyName, COUNT(oh.SalesOrderID) AS TotalOrders
+   FROM Sales.Customer c
+   LEFT JOIN Sales.SalesOrderHeader oh ON c.CustomerID = oh.CustomerID
+   GROUP BY c.CustomerID, c.CompanyName
+   ORDER BY TotalOrders DESC;
+   ```
+
+   Penjelasan:
+   - Klausa `SELECT` memilih `CustomerID`, `CompanyName`, dan menghitung total pesanan dengan fungsi `COUNT()`.
+   - Klausa `FROM` menggunakan tabel `Sales.Customer`.
+   - Klausa `LEFT JOIN` menghubungkan tabel `Sales.Customer` dengan `Sales.SalesOrderHeader` berdasarkan `CustomerID`.
+   - Klausa `GROUP BY` mengelompokkan data berdasarkan `CustomerID` dan `CompanyName`.
+   - Klausa `ORDER BY` mengurutkan data berdasarkan total pesanan secara menurun.
+
+3. Soal: Tentukan pelanggan yang pernah melakukan pesanan dengan setidaknya dua salesmen
+
+   Jawaban:
+   ```sql
+   SELECT c.CustomerID, c.CompanyName, COUNT(DISTINCT oh.SalesPersonID) AS UniqueSalespeople
+   FROM Sales.Customer c
+   JOIN Sales.SalesOrderHeader oh ON c.CustomerID = oh.CustomerID
+   GROUP BY c.CustomerID, c.CompanyName
+   HAVING COUNT(DISTINCT oh.SalesPersonID) >= 2
+   ORDER BY UniqueSalespeople DESC;
+   ```
+
+   Penjelasan:
+   - Klausa `SELECT` memilih `CustomerID`, `CompanyName`, dan menghitung jumlah salesmen unik yang menangani pesanan pelanggan dengan fungsi `COUNT(DISTINCT)`.
+   - Klausa `FROM` menggunakan tabel `Sales.Customer`.
+   - Klausa `JOIN` menghubungkan tabel `Sales.Customer` dengan `Sales.SalesOrderHeader` berdasarkan `CustomerID`.
+   - Klausa `GROUP BY` mengelompokkan data berdasarkan `CustomerID` dan `CompanyName`.
+   - Klausa `HAVING` memfilter data pelanggan yang memiliki setidaknya 2 salesmen unik.
+   - Klausa `ORDER BY` mengurutkan data berdasarkan jumlah salesmen unik secara menurun.
+
+4. Soal: Tentukan nama pelanggan beserta total banyak pesanan yang dilakukan, urutkan berdasarkan banyak pesanannya
+
+   Jawaban:
+   ```sql
+   SELECT c.CompanyName, COUNT(oh.SalesOrderID) AS TotalOrders
+   FROM Sales.Customer c
+   LEFT JOIN Sales.SalesOrderHeader oh ON c.CustomerID = oh.CustomerID
+   GROUP BY c.CompanyName
+   ORDER BY TotalOrders DESC;
+   ```
+
+   Penjelasan:
+   - Klausa `SELECT` memilih `CompanyName` dan menghitung total pesanan dengan fungsi `COUNT()`.
+   - Klausa `FROM` menggunakan tabel `Sales.Customer`.
+   - Klausa `LEFT JOIN` menghubungkan tabel `Sales.Customer` dengan `Sales.SalesOrderHeader` berdasarkan `CustomerID`.
+   - Klausa `GROUP BY` mengelompokkan data berdasarkan `CompanyName`.
+   - Klausa `ORDER BY` mengurutkan data berdasarkan total pesanan secara menurun.
+
+5. Soal: Tentukan salesmen dengan komisi tertinggi, dan tunjukkan komisinya
+
+   Jawaban:
+   ```sql
+   SELECT TOP 1 sp.BusinessEntityID, sp.SalesQuota, sp.Bonus, sp.CommissionPct, sp.SalesYTD, sp.SalesLastYear
+   FROM Sales.SalesPerson sp
+   ORDER BY sp.CommissionPct DESC;
+   ```
+
+   Penjelasan:
+   - Klausa `SELECT` memilih semua kolom dari tabel `Sales.SalesPerson` dan membatasi hasil menjadi 1 baris teratas.
+   - Klausa `FROM` menggunakan tabel `Sales.SalesPerson`.
+   - Klausa `ORDER BY` mengurutkan data berdasarkan `CommissionPct` (persentase komisi) secara menurun untuk mendapatkan salesmen dengan komisi tertinggi.
+
+Dengan menggunakan query SQL Server di atas, Anda dapat menjawab pertanyaan-pertanyaan yang diberikan dan memperoleh informasi yang dibutuhkan dari database AdventureWorks2022.bak.
