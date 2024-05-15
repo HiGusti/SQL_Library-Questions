@@ -1,58 +1,42 @@
-Baik, berikut adalah analisis dan query SQL Server untuk menjawab soal-soal tersebut menggunakan database AdventureWorks2022.bak:
+--Analisa database AdventureWorks2022.bak
 
-1. Soal: Tentukan pelanggan yang tidak membuat pesanan
+--1.Soal : 
+-- Tentukan pelanggan yang tidak membuat pesanan
 
-   Jawaban:
-   ```sql
-   SELECT c.CustomerID, c.CompanyName
-   FROM Sales.Customer c
-   LEFT JOIN Sales.SalesOrderHeader oh ON c.CustomerID = oh.CustomerID
-   WHERE oh.SalesOrderID IS NULL;
-   ```
+--Jawaban:
+SELECT c.CustomerID, c.CompanyName
+FROM Sales.Customer c
+LEFT JOIN Sales.SalesOrderHeader oh 
+ON c.CustomerID = oh.CustomerID
+WHERE oh.SalesOrderID IS NULL;
 
-   Penjelasan:
-   - Klausa `SELECT` memilih `CustomerID` dan `CompanyName` dari tabel `Sales.Customer`.
-   - Klausa `FROM` menggunakan tabel `Sales.Customer`.
-   - Klausa `LEFT JOIN` menghubungkan tabel `Sales.Customer` dengan `Sales.SalesOrderHeader` berdasarkan `CustomerID`.
-   - Klausa `WHERE` memfilter data pelanggan yang tidak memiliki `SalesOrderID` (tidak membuat pesanan).
 
-2. Soal: Tentukan total banyak pembelian yang dilakukan oleh setiap pelanggan
+--2.Soal: 
+Tentukan total banyak pembelian yang dilakukan oleh setiap pelanggan
 
-   Jawaban:
-   ```sql
-   SELECT c.CustomerID, c.CompanyName, COUNT(oh.SalesOrderID) AS TotalOrders
-   FROM Sales.Customer c
-   LEFT JOIN Sales.SalesOrderHeader oh ON c.CustomerID = oh.CustomerID
+--Jawaban :
+SELECT c.CustomerID, c.CompanyName,
+   COUNT(oh.SalesOrderID) AS TotalOrders
+FROM Sales.Customer c
+LEFT JOIN Sales.SalesOrderHeader oh 
+ON c.CustomerID = oh.CustomerID
    GROUP BY c.CustomerID, c.CompanyName
    ORDER BY TotalOrders DESC;
-   ```
 
-   Penjelasan:
-   - Klausa `SELECT` memilih `CustomerID`, `CompanyName`, dan menghitung total pesanan dengan fungsi `COUNT()`.
-   - Klausa `FROM` menggunakan tabel `Sales.Customer`.
-   - Klausa `LEFT JOIN` menghubungkan tabel `Sales.Customer` dengan `Sales.SalesOrderHeader` berdasarkan `CustomerID`.
-   - Klausa `GROUP BY` mengelompokkan data berdasarkan `CustomerID` dan `CompanyName`.
-   - Klausa `ORDER BY` mengurutkan data berdasarkan total pesanan secara menurun.
+--3. Soal: 
+--Tentukan pelanggan yang pernah melakukan pesanan dengan setidaknya dua salesmen
 
-3. Soal: Tentukan pelanggan yang pernah melakukan pesanan dengan setidaknya dua salesmen
-
-   Jawaban:
-   ```sql
-   SELECT c.CustomerID, c.CompanyName, COUNT(DISTINCT oh.SalesPersonID) AS UniqueSalespeople
-   FROM Sales.Customer c
-   JOIN Sales.SalesOrderHeader oh ON c.CustomerID = oh.CustomerID
-   GROUP BY c.CustomerID, c.CompanyName
-   HAVING COUNT(DISTINCT oh.SalesPersonID) >= 2
-   ORDER BY UniqueSalespeople DESC;
-   ```
-
-   Penjelasan:
-   - Klausa `SELECT` memilih `CustomerID`, `CompanyName`, dan menghitung jumlah salesmen unik yang menangani pesanan pelanggan dengan fungsi `COUNT(DISTINCT)`.
-   - Klausa `FROM` menggunakan tabel `Sales.Customer`.
-   - Klausa `JOIN` menghubungkan tabel `Sales.Customer` dengan `Sales.SalesOrderHeader` berdasarkan `CustomerID`.
-   - Klausa `GROUP BY` mengelompokkan data berdasarkan `CustomerID` dan `CompanyName`.
-   - Klausa `HAVING` memfilter data pelanggan yang memiliki setidaknya 2 salesmen unik.
-   - Klausa `ORDER BY` mengurutkan data berdasarkan jumlah salesmen unik secara menurun.
+Jawaban:
+SELECT c.CustomerID, c.CompanyName, 
+   COUNT(DISTINCT oh.SalesPersonID) AS 
+   UniqueSalespeople
+FROM Sales.Customer c
+JOIN Sales.SalesOrderHeader oh 
+   ON c.CustomerID = oh.CustomerID
+GROUP BY c.CustomerID, c.CompanyName
+   HAVING COUNT(DISTINCT oh.SalesPersonID) 
+   >= 2
+ORDER BY UniqueSalespeople DESC;
 
 4. Soal: Tentukan nama pelanggan beserta total banyak pesanan yang dilakukan, urutkan berdasarkan banyak pesanannya
 
